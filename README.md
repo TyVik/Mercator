@@ -5,12 +5,13 @@ Requires:
  - ruby;
  - PostgreSQL.
 
-Prepare data:
-1. Create user "mercator":
-  CREATE ROLE mercator LOGIN NOSUPERUSER INHERIT CREATEDB NOCREATEROLE NOREPLICATION;
-2. Create db "mercator":
-  CREATE SCHEMA mercator AUTHORIZATION mercator;
-3. Create table "Countries":
+Prepare data:<br/>
+<ol>
+<li>Create user "mercator":<br/>
+  CREATE ROLE mercator LOGIN NOSUPERUSER INHERIT CREATEDB NOCREATEROLE NOREPLICATION;</li>
+<li>Create db "mercator":<br/>
+  CREATE SCHEMA mercator AUTHORIZATION mercator;</li>
+<li>Create table "Countries":<br/>
   CREATE TABLE "Countries"(
     "ID" integer NOT NULL DEFAULT nextval('countries_seq'::regclass),
     "Name" character varying(50) NOT NULL,
@@ -20,5 +21,6 @@ Prepare data:
   ) WITH (
     OIDS=FALSE
   );
-  ALTER TABLE "Countries" OWNER TO mercator;
-4. Run script fillDatabase.rb
+  ALTER TABLE "Countries" OWNER TO mercator;</li>
+<li>Run script fillDatabase.rb</li>
+</ol>
