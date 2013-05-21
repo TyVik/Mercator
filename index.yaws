@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Mercator Puzzle!</title>
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&subset=all" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=geometry"></script>
+    <script type="text/javascript">
+<erl>
+countCountries() ->
+  {ok, C} = pgsql:connect("localhost", "mercator", "mercator", [{database, "mercator"}]),
+  {ok, _, [{Count}|_]} = pgsql:squery(C, "SELECT count(*) from \"Countries\""),
+  ok = pgsql:close(C),
+  binary_to_list(Count).
+
+randomCountries() ->
+  random:uniform(countCountries()).
+
+unquote([]) -> [];
+unquote([92|[92|[92|[92|T]]]]) -> [92, unquote(T)]; % why???
+unquote([92|[H|T]]) -> [H, unquote(T)];
+unquote([H|T]) -> [H,  unquote(T)].
+
+country(Country) ->
+  {ok, C} = pgsql:connect("localhost", "mercator", "mercator", [{database, "mercator"}]),
+  {ok, _, [{Rows}]} = pgsql:squery(C, "SELECT \"Polygon\" from \"Countries\" where \"Name\" = \'" ++ Country ++ "\'"),
+  ok = pgsql:close(C),
+  K = binary_to_list(Rows),
+  L = string:substr(K, 3, length(K) - 4), % уберём кавычки postgres
+  unquote(L).
+
+countries(Country) ->
+  "[" ++ country(Country) ++"];".
+
+out(Arg) ->
+  case queryvar(Arg, "name") of
+    {ok, Name} -> {html, string:concat("var countries = ", countries(Name))}
+  end.
+
+</erl>
+    </script>
+    <script type="text/javascript" src="main.js"></script>
+  </head>
+
+  <body>
+    <div id="map"></div>
+  </body>
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-18071-1']);
+  _gaq.push(['_trackPageview']);
+</script>
+</html>
