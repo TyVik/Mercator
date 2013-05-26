@@ -11,7 +11,7 @@ xmldoc = Document.new(xmlfile)
 
 $connection = PG::Connection.new( :host => '127.0.0.1', :port => 5432,
     :dbname => 'mercator', :user => 'mercator', :password => 'mercator')
-$connection.prepare('stm', 'INSERT INTO "Countries"("Name", "Polygon") values ($1, ARRAY[$2])')
+$connection.prepare('stm', 'INSERT INTO "Countries"("Name", "Polygon", "Answer") values ($1, ARRAY[$2], $3)')
 
 def processPolygon(str)
     coordinates = str.split
@@ -34,9 +34,49 @@ def getPolygons(node)
     return result
 end
 
-def saveCountry(name, polygon)
-  puts polygon.class
-  $connection.exec_prepared('stm', [name, polygon])
+def getAnswer(node)
+    s = nil
+    w = nil
+    n = nil
+    e = nil
+    init = false
+    polygons = node.elements["MultiGeometry"]
+    polygons.each_element('Polygon/outerBoundaryIs/LinearRing/coordinates') {
+      |polygon|
+        coordinates = polygon.text.split
+        coordinates.each {
+          |coord|
+            arr = coord.split ","
+            if (!init)
+                s = arr[1].to_f
+                w = arr[0].to_f
+                n = s
+                e = w
+                init = true
+              else
+                if s > arr[1].to_f
+                  s = arr[1].to_f
+                end
+                if n < arr[1].to_f
+                  n = arr[1].to_f
+                end
+                if w > arr[0].to_f
+                  w = arr[0].to_f
+                end
+                if e < arr[0].to_f
+                  e = arr[0].to_f
+                end
+                # if (arr[1].to_f )
+              end
+        }
+    }
+#    return [(s-1).round(4).to_s, (w-1).round(4).to_s, (n+1).round(4).to_s, (e+1).round(4).to_s]
+    s = (s-1).round(4)
+    w = (w-1).round(4)
+    n = (n+1).round(4)
+    e = (e+1).round(4)
+    # return [s, w, n, e]
+    return "{#{s}, #{w},#{n},#{e}}"
 end
 
 # for each country
@@ -45,5 +85,6 @@ xmldoc.elements.each("kml/Document/Placemark"){
     name = e.elements["name"].text
     puts "Processing " + name
     gmapPolygon = getPolygons(e)
-    saveCountry(name, gmapPolygon)
+    answer = getAnswer(e)
+    $connection.exec_prepared('stm', [name, gmapPolygon, answer])
 }

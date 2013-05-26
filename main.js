@@ -1,7 +1,7 @@
 var map;
 var polys = [];
 
-function addPoly(id, start) {
+function addPoly(id, start, answer) {
   var options = {
     strokeColor: '#FF0000',
     strokeOpacity: 0.8,
@@ -12,20 +12,50 @@ function addPoly(id, start) {
     map: map,
     draggable: true,
     zIndex: 2,
-    paths: [],
   };
+  var paths = [];
   for (var i = 0; i < start.length; i++) {
-    options.paths.push(google.maps.geometry.encoding.decodePath(start[i]));
+    paths.push(google.maps.geometry.encoding.decodePath(start[i]));
   }
+  options.paths = paths;
 
   var poly = new google.maps.Polygon(options);
+  google.maps.event.addListener(poly, 'dragend', function() {
+    if (boundsContains(answer, poly)) {
+      replacePiece(poly, paths);
+    }
+  });
   poly.moveTo(new google.maps.LatLng(25, -25));
   polys.push(poly);
 }
 
+function replacePiece(poly, paths) {
+  var options = {
+    strokeColor: '#00FF00',
+    fillColor: '#00FF00',
+    draggable: false,
+    zIndex: 1,
+    path: paths,
+  };
+  poly.setOptions(options);
+}
+
+function boundsContains(bounds, poly) {
+  var paths = poly.getPaths().getArray();
+  for (var i = 0; i < paths.length; i++) {
+    var p = paths[i].getArray();
+    for (var j = 0; j < p.length; j++) {
+      if (!bounds.contains(p[j])) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 function addCountries() {
   for (var i = countries.length - 1; i >= 0; i--) {
-    addPoly(i, countries[i]);
+    addPoly(i, countries[i], answers[i]);
   };
 }
 
