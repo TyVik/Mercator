@@ -24,6 +24,7 @@ Prepare data:<br/>
     "Name" character varying(50) NOT NULL,
     "Level" character varying,
     "Polygon" character varying[],
+    "Available" boolean,
     CONSTRAINT "CountriesID" PRIMARY KEY ("ID" )
   ) WITH (
     OIDS=FALSE
@@ -32,3 +33,5 @@ Prepare data:<br/>
 </code>
 
 4. Run script fillDatabase.rb<
+
+5. Check which country available.

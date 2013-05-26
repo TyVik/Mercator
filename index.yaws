@@ -7,6 +7,8 @@
     <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&subset=all" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="main.css">
     <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=geometry"></script>
+    <script src="js/google.maps.Polygon.getBounds.js"></script>
+    <script src="js/google.maps.Polygon.moveTo.js"></script>
     <script type="text/javascript">
 <erl>
 countCountries() ->
@@ -15,30 +17,42 @@ countCountries() ->
   ok = pgsql:close(C),
   binary_to_list(Count).
 
-randomCountries() ->
-  random:uniform(countCountries()).
-
 unquote([]) -> [];
 unquote([92|[92|[92|[92|T]]]]) -> [92, unquote(T)]; % why???
 unquote([92|[H|T]]) -> [H, unquote(T)];
 unquote([H|T]) -> [H,  unquote(T)].
 
-country(Country) ->
-  {ok, C} = pgsql:connect("localhost", "mercator", "mercator", [{database, "mercator"}]),
-  {ok, _, [{Rows}]} = pgsql:squery(C, "SELECT \"Polygon\" from \"Countries\" where \"Name\" = \'" ++ Country ++ "\'"),
-  ok = pgsql:close(C),
-  K = binary_to_list(Rows),
+polygon(Raw) ->
+  K = binary_to_list(Raw),
   L = string:substr(K, 3, length(K) - 4), % уберём кавычки postgres
   unquote(L).
 
-countries(Country) ->
-  "[" ++ country(Country) ++"];".
+country(Name) ->
+  {ok, C} = pgsql:connect("localhost", "mercator", "mercator", [{database, "mercator"}]),
+  {ok, _, [{Rows}]} = pgsql:squery(C, "SELECT \"Polygon\" from \"Countries\" where \"Name\" = \'" ++ Name ++ "\'"),
+  ok = pgsql:close(C),
+  polygon(Rows).
+
+echoJSVar(Countries) ->
+  "var countries = [" ++ Countries ++ "];".
+
+parsePolygons([]) -> [];
+parsePolygons([{Row}|T]) -> polygon(Row) ++ ", " ++ parsePolygons(T).
+
+countries(Count) ->
+  {ok, C} = pgsql:connect("localhost", "mercator", "mercator", [{database, "mercator"}]),
+  {ok, _, Rows} = pgsql:squery(C, "SELECT \"Polygon\" from \"Countries\" where \"Available\" = TRUE order by RANDOM() limit " ++ Count),
+  ok = pgsql:close(C),
+  parsePolygons(Rows).
 
 out(Arg) ->
   case queryvar(Arg, "name") of
-    {ok, Name} -> {html, string:concat("var countries = ", countries(Name))}
+    {ok, Name} -> {html, echoJSVar(country(Name))};
+    undefined ->
+      case queryvar(Arg, "count") of
+        {ok, Count} -> {html, echoJSVar(countries(Count))}
+      end
   end.
-
 </erl>
     </script>
     <script type="text/javascript" src="main.js"></script>
