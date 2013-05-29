@@ -1,51 +1,36 @@
 var map;
 var polys = [];
 
-function addPoly(id, start, answer) {
-  var options = {
-    strokeColor: '#FF0000',
-    strokeOpacity: 0.8,
-    strokeWeight: 2,
-    fillColor: '#FF0000',
-    fillOpacity: 0.35,
-    geodesic: true,
-    map: map,
-    draggable: true,
-    zIndex: 2,
-  };
-  var paths = [];
-  for (var i = 0; i < start.length; i++) {
-    paths.push(google.maps.geometry.encoding.decodePath(start[i]));
+function pathStringsToArray(paths) {
+  var result = [];
+  for (var i = 0; i < paths.length; i++) {
+    result.push(google.maps.geometry.encoding.decodePath(paths[i]));
   }
-  options.paths = paths;
-
-  var poly = new google.maps.Polygon(options);
-  google.maps.event.addListener(poly, 'dragend', function() {
-    if (boundsContains(answer, poly)) {
-      replacePiece(poly, paths);
-    }
-  });
-  poly.moveTo(new google.maps.LatLng(25, -25));
-  polys.push(poly);
+  return result;
 }
 
-function replacePiece(poly, paths) {
-  var options = {
+function replacePiece(poly) {
+var options = {
     strokeColor: '#00FF00',
     fillColor: '#00FF00',
     draggable: false,
     zIndex: 1,
-    path: paths,
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    fillOpacity: 0.35,
+    geodesic: true,
+    map: map,
   };
+  options.paths = pathStringsToArray(countries[poly.index]);
   poly.setOptions(options);
 }
 
-function boundsContains(bounds, poly) {
+function boundsContains(poly) {
   var paths = poly.getPaths().getArray();
   for (var i = 0; i < paths.length; i++) {
     var p = paths[i].getArray();
     for (var j = 0; j < p.length; j++) {
-      if (!bounds.contains(p[j])) {
+      if (!answers[poly.index].contains(p[j])) {
         return false;
       }
     }
@@ -54,8 +39,29 @@ function boundsContains(bounds, poly) {
 }
 
 function addCountries() {
+  var options = {
+      strokeColor: '#FF0000',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: '#FF0000',
+      fillOpacity: 0.35,
+      geodesic: true,
+      map: map,
+      draggable: true,
+      zIndex: 2,
+    };
   for (var i = countries.length - 1; i >= 0; i--) {
-    addPoly(i, countries[i], answers[i]);
+    options.paths = pathStringsToArray(countries[i]);
+
+    var poly = new google.maps.Polygon(options);
+    poly.index = i;
+    google.maps.event.addListener(poly, 'dragend', function() {
+      if (boundsContains(this)) {
+        replacePiece(this);
+      }
+    });
+    poly.moveTo(new google.maps.LatLng(25, -25));
+    polys.push(poly);
   };
 }
 
