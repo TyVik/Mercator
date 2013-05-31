@@ -35,3 +35,5 @@ Prepare data:<br/>
 4. Run script fillDatabase.rb<
 
 5. Check which country available.
+
+6. Run "make" in root directory. YAWS "ebin_dir" should include "ebin" directory
