@@ -43,32 +43,3 @@ if (!google.maps.Polygon.prototype.replacePiece) {
         this.setOptions(options);
     }
 }
-
-function Country(polygon, answer) {
-    var options = {
-        strokeColor: '#FF0000',
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        fillColor: '#FF0000',
-        fillOpacity: 0.35,
-        geodesic: true,
-        map: map,
-        draggable: true,
-        zIndex: 2,
-    };
-    this.map = new google.maps.Polygon(options);
-    this.map.polygon = polygon;
-    this.map.answer = answer;
-    this.map.setPaths(this.map.pathStringsToArray(this.map.polygon));
-    google.maps.event.addListener(this.map, 'dragend', function() {
-        if (this.boundsContains()) {
-            this.replacePiece();
-        }
-    });
-
-    this.shuffle = function() {
-        this.map.moveTo(new google.maps.LatLng(25, -25));
-    }
-
-    return this;
-}
