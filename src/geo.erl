@@ -16,7 +16,7 @@ polygon(Raw) ->
 answer([]) -> "";
 answer(Raw) ->
     K = binary_to_list(Raw),
-    L = string:substr(K, 3, length(K) - 4),
+    L = string:substr(K, 2, length(K) - 2),
     [Point1Lat|[Point1Lon|[Point2Lat|[Point2Lon]]]] = string:tokens(L, ","),
     "new google.maps.LatLngBounds(new google.maps.LatLng(" ++ Point1Lat ++ ", " ++ Point1Lon ++ "), new google.maps.LatLng(" ++ Point2Lat ++ "," ++ Point2Lon ++ "))".
 
