@@ -10,7 +10,7 @@ unquote([H|T]) -> [H,  unquote(T)].
 polygon([]) -> "";
 polygon(Raw) ->
     K = binary_to_list(Raw),
-    L = string:substr(K, 3, length(K) - 4), % уберём кавычки postgres
+    L = string:substr(K, 3, length(K) - 4), % delete postgres quotes
     unquote(L).
 
 answer([]) -> "";

@@ -20,7 +20,7 @@ echoJSVar({Countries, Answers}) ->
   "var countries = [" ++ Countries ++ "]; \n" ++ "var answers = [" ++ Answers ++ "];".
 
 countries(Count) ->
-  {ok, Cols, Rows} = sql_driver:run_sql("SELECT \"Polygon\", \"Answer\" from \"Countries\" where \"Name\" = \'Norway\' order by RANDOM() limit " ++ Count),
+  {ok, Cols, Rows} = sql_driver:run_sql("SELECT \"Polygon\", \"Answer\" from \"Countries\" where \"Available\" = True order by RANDOM() limit " ++ Count),
   geo:parsePolygonsAndAnswers(Rows).
 
 out(Arg) ->
