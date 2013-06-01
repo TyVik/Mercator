@@ -4,6 +4,11 @@ html, body, #map {
     padding: 0;
 }
 
+#buttons {
+    margin: 0 auto;
+    text-align: center;
+}
+
 #give_up {
     background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0.05, #EDEDED), to(#DFDFDF));
     border-bottom-left-radius: 24px;
@@ -22,5 +27,5 @@ html, body, #map {
     text-decoration: none;
     text-shadow: white 1px 1px 34px;
     width: 200px;
-    margin: 0 auto;
+    display: inline-block;
 }

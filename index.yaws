@@ -37,7 +37,10 @@ out(Arg) ->
   </head>
 
   <body>
-    <div id="give_up" onclick = "giveUp()">Сдаюсь!</div>
+    <div id="buttons">
+      <div id="give_up" onclick = "giveUp()">Сдаюсь!</div>
+      <div id="give_up" onclick = "reload()">Ещё раз?</div>
+    </div>
     <div id="map"></div>
   </body>
 

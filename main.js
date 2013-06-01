@@ -45,3 +45,7 @@ function giveUp() {
     puzzle[i].replacePiece();
   };
 }
+
+function reload() {
+  location.reload();
+}
