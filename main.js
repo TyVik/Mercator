@@ -1,4 +1,5 @@
 var map;
+var puzzle = [];
 
 function addCountries() {
     var options = {
@@ -23,6 +24,7 @@ function addCountries() {
         }
     });
     country.moveTo(new google.maps.LatLng(25, -25));
+    puzzle.push(country);
     country = null;
   };
 }
@@ -37,3 +39,9 @@ function initialize() {
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
+
+function giveUp() {
+  for (var i = puzzle.length - 1; i >= 0; i--) {
+    puzzle[i].replacePiece();
+  };
+}
