@@ -38,8 +38,8 @@ out(Arg) ->
 
   <body>
     <div id="buttons">
-      <div id="give_up" onclick = "giveUp()">Сдаюсь!</div>
-      <div id="give_up" onclick = "reload()">Ещё раз?</div>
+      <div class="button" id="give_up" onclick = "giveUp()">Сдаюсь!</div>
+      <div class="button" id="retry" onclick = "reload()">Ещё раз?</div>
     </div>
     <div id="map"></div>
   </body>

@@ -1,5 +1,5 @@
 html, body, #map {
-    height: 98%;
+    height: 100%;
     margin: 0;
     padding: 0;
 }
@@ -7,10 +7,12 @@ html, body, #map {
 #buttons {
     margin: 0 auto;
     text-align: center;
+    position: fixed;
+    z-index: 999;
+    left: 30%;
 }
 
-#give_up {
-    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0.05, #EDEDED), to(#DFDFDF));
+.button {
     border-bottom-left-radius: 24px;
     border-bottom-right-radius: 24px;
     border-top-left-radius: 24px;
@@ -26,6 +28,15 @@ html, body, #map {
     text-align: center;
     text-decoration: none;
     text-shadow: white 1px 1px 34px;
-    width: 200px;
     display: inline-block;
+}
+
+#give_up {
+    background-color: #BBFFBB;
+    width: 200px;
+}
+
+#retry {
+    background-color: #FFBBBB;
+    width: 200px;
 }
