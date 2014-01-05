@@ -1,10 +1,7 @@
 ERLC=/usr/bin/erlc
 ERLCFLAGS=-o
 SRCDIR=./src
-BEAMDIR=./ebin
+BEAMDIR=/usr/lib/yaws/custom/ebin
 
 all:
-	@ mkdir -p $(BEAMDIR) ;
 	@ $(ERLC) $(ERLCFLAGS) $(BEAMDIR) $(SRCDIR)/*.erl ;
-clean:
-	@ rm -rf $(BEAMDIR) ;
