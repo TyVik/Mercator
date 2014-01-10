@@ -1,48 +1,35 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-    <title>Mercator Puzzle!</title>
-    <!-- <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&subset=all" rel="stylesheet" type="text/css"> -->
-    <link rel="stylesheet" type="text/css" href="main.css">
-    <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=geometry"></script>
-    <script src="js/google.maps.Polygon.getBounds.js"></script>
-    <script src="js/google.maps.Polygon.moveTo.js"></script>
-    <script src="js/country.js"></script>
-    <script type="text/javascript">
+<head>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+  <title>Mercator Puzzle!</title>
+  <!-- <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&subset=all" rel="stylesheet" type="text/css"> -->
+  <link rel="stylesheet" type="text/css" href="css/main.css">
+</head>
+
+<body>
+  <h1>Mercator Puzzle</h1>
+  <ul>
 <erl>
-country(Name) ->
-  {ok, Cols, [{Rows}]} = sql_driver:run_sql("SELECT \"Polygon\" from \"Countries\" where \"Name\" = \'" ++ Name ++ "\'"),
-  geo:polygon(Rows).
+createMapsList([]) -> [];
+createMapsList([H|T]) ->
+    {Table, Name} = H,
+    "<li><a href='map.yaws?map=" ++ binary_to_list(Table) ++ "'>" ++ binary_to_list(Name) ++ "</a></li>" ++ createMapsList(T).
 
-echoJSVar({Countries, Answers}) ->
-  "var countries = [" ++ Countries ++ "]; \n" ++ "var answers = [" ++ Answers ++ "];".
-
-countries(Count) ->
-  {ok, Cols, Rows} = sql_driver:run_sql("SELECT \"Polygon\", \"Answer\" from \"Countries\" where \"Available\" = True order by RANDOM() limit " ++ Count),
-  geo:parsePolygonsAndAnswers(Rows).
+getMaps() ->
+    {ok, Cols, Rows} = sql_driver:run_sql("SELECT table_name, name from maps"),
+    createMapsList(Rows).
 
 out(Arg) ->
-  case queryvar(Arg, "name") of
-    {ok, Name} -> {html, echoJSVar({country(Name), ""})};
-    undefined ->
-      case queryvar(Arg, "count") of
-        {ok, Count} -> {html, echoJSVar(countries(Count))}
-      end
-  end.
+%    {ok, Cols, [Rows]} = sql_driver:run_sql("SELECT center from maps where id = 6"),
+%    {K} = Rows,
+%    [Lat, Lon] = sql_driver:decode_point(K),
+%    {html, "Lat " ++ Lat ++ " lon " ++ Lon}.
+    {html, getMaps()}.
 </erl>
-    </script>
-    <script type="text/javascript" src="main.js"></script>
-  </head>
-
-  <body>
-    <div id="buttons">
-      <div class="button" id="give_up" onclick = "giveUp()">Сдаюсь!</div>
-      <div class="button" id="retry" onclick = "reload()">Ещё раз?</div>
-    </div>
-    <div id="map"></div>
-    <a href="https://github.com/TyVik/Mercator"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_green_007200.png" alt="Fork me on GitHub"></a>
-  </body>
+  </ul>
+  <a href="https://github.com/TyVik/Mercator"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+</body>
 
 </html>

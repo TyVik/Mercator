@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Mercator Puzzle!</title>
+    <!-- <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&subset=all" rel="stylesheet" type="text/css"> -->
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=geometry"></script>
+    <script src="js/google.maps.Polygon.getBounds.js"></script>
+    <script src="js/google.maps.Polygon.moveTo.js"></script>
+    <script src="js/country.js"></script>
+    <script type="text/javascript">
+<erl>
+echoJSVar({Countries, Answers}) ->
+  "var countries = [" ++ Countries ++ "]; \n" ++ "var answers = [" ++ Answers ++ "];".
+
+countries(Map, Count) ->
+  {ok, Cols, Rows} = sql_driver:run_sql("SELECT polygon, answer from " ++ Map ++ " where available = True order by RANDOM() limit " ++ Count),
+  geo:parsePolygonsAndAnswers(Rows).
+
+out(Arg) ->
+    case queryvar(Arg, "map") of
+        {ok, Map} ->
+            case queryvar(Arg, "count") of
+                {ok, Count} -> {html, echoJSVar(countries(Map, Count))};
+                undefined -> {html, echoJSVar(countries(Map, "12"))}
+            end;
+        undefined -> {html, "alert('Не указана карта!');"}
+    end.
+</erl>
+    </script>
+    <script type="text/javascript" src="js/main.js"></script>
+  </head>
+
+  <body>
+    <div id="buttons">
+      <div class="button" id="give_up" onclick = "giveUp()">Сдаюсь!</div>
+      <div class="button" id="retry" onclick = "reload()">Ещё раз?</div>
+    </div>
+    <div id="map"></div>
+    <a href="https://github.com/TyVik/Mercator"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+  </body>
+
+</html>
