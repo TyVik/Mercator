@@ -105,7 +105,7 @@ class KmlWriter
                       s = s > arr[1].to_f ? arr[1].to_f : s
                       n = n < arr[1].to_f ? arr[1].to_f : n
                       w = w > arr[0].to_f ? arr[0].to_f : w
-                      e = e > arr[0].to_f ? arr[0].to_f : e
+                      e = e < arr[0].to_f ? arr[0].to_f : e
                    end
               end
           end
@@ -114,7 +114,7 @@ class KmlWriter
           w = (w-precision).round(4)
           n = (n+precision).round(4)
           e = (e+precision).round(4)
-          return "{#{s}, #{w},#{n},#{e}}"
+          return "{#{s},#{w},#{n},#{e}}"
       end
 
     xmlFile = File.new(@fileName)
