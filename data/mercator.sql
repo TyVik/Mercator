@@ -48,6 +48,16 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 --
+-- TOC entry 7 (class 2615 OID 22990)
+-- Name: mercator; Type: SCHEMA; Schema: -; Owner: mercator
+--
+
+CREATE SCHEMA mercator;
+
+
+ALTER SCHEMA mercator OWNER TO mercator;
+
+--
 -- TOC entry 163 (class 3079 OID 11677)
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
 --
@@ -64,12 +74,12 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
-SET search_path = public, pg_catalog;
+SET search_path = mercator, pg_catalog;
 
 --
 -- TOC entry 161 (class 1259 OID 16387)
 -- Dependencies: 5
--- Name: maps_seq; Type: SEQUENCE; Schema: public; Owner: mercator
+-- Name: maps_seq; Type: SEQUENCE; Schema: mercator; Owner: mercator
 --
 
 CREATE SEQUENCE maps_seq
@@ -80,7 +90,7 @@ CREATE SEQUENCE maps_seq
     CACHE 1;
 
 
-ALTER TABLE public.maps_seq OWNER TO mercator;
+ALTER TABLE mercator.maps_seq OWNER TO mercator;
 
 SET default_tablespace = '';
 
@@ -89,7 +99,7 @@ SET default_with_oids = false;
 --
 -- TOC entry 162 (class 1259 OID 16392)
 -- Dependencies: 1783 1784 1785 1786 5
--- Name: maps; Type: TABLE; Schema: public; Owner: mercator; Tablespace: 
+-- Name: maps; Type: TABLE; Schema: mercator; Owner: mercator; Tablespace: 
 --
 
 CREATE TABLE maps (
@@ -102,12 +112,12 @@ CREATE TABLE maps (
 );
 
 
-ALTER TABLE public.maps OWNER TO mercator;
+ALTER TABLE mercator.maps OWNER TO mercator;
 
 --
 -- TOC entry 1891 (class 0 OID 16392)
 -- Dependencies: 162 1892
--- Data for Name: maps; Type: TABLE DATA; Schema: public; Owner: mercator
+-- Data for Name: maps; Type: TABLE DATA; Schema: mercator; Owner: mercator
 --
 
 COPY maps (id, table_name, name, center, default_position, zoom) FROM stdin;
@@ -117,7 +127,7 @@ COPY maps (id, table_name, name, center, default_position, zoom) FROM stdin;
 --
 -- TOC entry 1900 (class 0 OID 0)
 -- Dependencies: 161
--- Name: maps_seq; Type: SEQUENCE SET; Schema: public; Owner: mercator
+-- Name: maps_seq; Type: SEQUENCE SET; Schema: mercator; Owner: mercator
 --
 
 SELECT pg_catalog.setval('maps_seq', 1, false);
@@ -126,7 +136,7 @@ SELECT pg_catalog.setval('maps_seq', 1, false);
 --
 -- TOC entry 1788 (class 2606 OID 16396)
 -- Dependencies: 162 162 1893
--- Name: maps_pk; Type: CONSTRAINT; Schema: public; Owner: mercator; Tablespace: 
+-- Name: maps_pk; Type: CONSTRAINT; Schema: mercator; Owner: mercator; Tablespace: 
 --
 
 ALTER TABLE ONLY maps
@@ -136,13 +146,13 @@ ALTER TABLE ONLY maps
 --
 -- TOC entry 1898 (class 0 OID 0)
 -- Dependencies: 5
--- Name: public; Type: ACL; Schema: -; Owner: postgres
+-- Name: mercator; Type: ACL; Schema: -; Owner: postgres
 --
 
-REVOKE ALL ON SCHEMA public FROM PUBLIC;
-REVOKE ALL ON SCHEMA public FROM postgres;
-GRANT ALL ON SCHEMA public TO postgres;
-GRANT ALL ON SCHEMA public TO PUBLIC;
+REVOKE ALL ON SCHEMA mercator FROM mercator;
+REVOKE ALL ON SCHEMA mercator FROM postgres;
+GRANT ALL ON SCHEMA mercator TO postgres;
+GRANT ALL ON SCHEMA mercator TO mercator;
 
 
 -- Completed on 2014-01-09 17:11:22 MSK
