@@ -49,3 +49,10 @@ function giveUp() {
 function reload() {
   location.reload();
 }
+
+function debugAnswers() {
+  for (var i = answers.length - 1; i >= 0; i--) {
+    rect = new google.maps.Rectangle({map: map});
+    rect.setBounds(answers[i]);
+  }
+}
