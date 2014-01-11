@@ -132,6 +132,9 @@ class KmlWriter
         answer = getAnswer(coordinates, @precision)
         $connection.exec_prepared(insertStm, [name, gmapPolygon, answer])
     end
+
+    # activate all regions
+    $connection.exec("UPDATE %s set available=True" % [@tableName])
   end
 
   def registerTable()
