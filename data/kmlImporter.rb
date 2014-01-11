@@ -6,7 +6,7 @@ require './gmap.rb'
 require 'pg'
 include REXML
 
-$connection = PG::Connection.new(:host => '95.85.47.11', :port => 5432, :dbname => 'mercator', :user => 'mercator', :password => 'mercator')
+$connection = PG::Connection.new(:host => '127.0.0.1', :port => 5432, :dbname => 'mercator', :user => 'mercator', :password => 'mercator')
 $encoder = GMapPolylineEncoder.new()
 
 class KmlWriter
