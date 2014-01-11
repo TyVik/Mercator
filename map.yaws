@@ -40,6 +40,21 @@ out(Arg) ->
     </div>
     <div id="map"></div>
     <a href="https://github.com/TyVik/Mercator"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+<erl>
+initMap(Map) ->
+  {ok, Cols, [Row|_]} = sql_driver:run_sql("SELECT zoom, center, default_position from maps WHERE table_name = '" ++ Map ++ "'"),
+  {<<Zoom>>, Center, Position} = Row,
+  [CenterX, CenterY] = sql_driver:decode_point(Center),
+  [PositionX, PositionY] = sql_driver:decode_point(Position),
+  "google.maps.event.addDomListener(window, 'load', initialize(" ++ [Zoom] ++ ", [" ++ PositionX ++ "," ++ PositionY ++ "], [" ++ CenterX ++ ", " ++ CenterY ++ "]));".
+  % "google.maps.event.addDomListener(window, 'load', initialize(" ++ [Zoom] ++ ", [" ++ PositionX ++ "," ++ PosiotionY ++ "], [" ++ CenterX ++ ", " ++ CenterY ++ "]));".
+
+out(Arg) ->
+  case queryvar(Arg, "map") of
+    {ok, Map} -> {html, "<script type='text/javascript'>" ++ initMap(Map) ++ "</script>"};
+    undefined -> {html, "alert('Не указана карта!');"}
+  end.
+</erl>
   </body>
 
 </html>

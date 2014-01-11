@@ -1,7 +1,7 @@
 var map;
 var puzzle = [];
 
-function addCountries() {
+function addCountries(position) {
     var options = {
         strokeColor: '#FF0000',
         strokeOpacity: 0.8,
@@ -23,22 +23,20 @@ function addCountries() {
             this.replacePiece();
         }
     });
-    country.moveTo(new google.maps.LatLng(25, -25));
+    country.moveTo(new google.maps.LatLng(position[0], position[1]));
     puzzle.push(country);
     country = null;
   };
 }
 
-function initialize() {
+function initialize(zoom, center, default_position) {
   map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 2,
-    center: new google.maps.LatLng(40, -20),
+    zoom: zoom,
+    center: new google.maps.LatLng(center[0], center[1]),
     mapTypeId: google.maps.MapTypeId.TERRAIN
   });
-  addCountries();
+  addCountries(default_position);
 }
-
-google.maps.event.addDomListener(window, 'load', initialize);
 
 function giveUp() {
   for (var i = puzzle.length - 1; i >= 0; i--) {
